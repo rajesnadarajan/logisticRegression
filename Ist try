@@ -1,0 +1,52 @@
+import pandas as pd
+import warnings
+warnings.filterwarnings("ignore")
+
+data=pd.read_csv("Social_Network_Ads.csv")
+data.head()
+data.describe()
+data.columns
+data.shape
+data
+data.groupby(["Gender"]).Purchased
+x=data[["Age","EstimatedSalary"]]
+y=data[["Purchased"]]
+sns.boxplot(x=data.Gender,y=data.Purchased)
+plt.title("Advertisments")
+plt.show()
+sns.boxplot(x=data.Purchased,y=data.Age)
+plt.title("Advertisments")
+plt.show()
+#choosen as x variable
+sns.boxplot(x=data.Purchased,y=data.EstimatedSalary)
+plt.title("Advertisments")
+plt.show()
+#choosen as x variable
+dummies=pd.get_dummies(data.Gender)
+dummies
+merged=pd.concat([data,dummies],axis='columns')
+merged
+x
+data=data.drop("Gender",axis='columns')
+data
+dummies
+#scaling the data
+
+from sklearn.preprocessing import StandardScaler
+sc=StandardScaler()
+
+x["Age"]=sc.fit_transform(x.Age.values.reshape(-1,1))
+x["EstimatedSalary"]=sc.fit_transform(x.EstimatedSalary.values.reshape(-1,1))
+x
+from sklearn.model_selection import train_test_split
+x_train,x_test,y_train,y_test=train_test_split(x,y,test_size=0.2)
+from sklearn.linear_model import LogisticRegression
+model=LogisticRegression()
+model.fit(x_train,y_train)
+model.score(x_test,y_test)
+y_pred=model.predict(x_test)
+from sklearn.metrics import confusion_matrix
+cm_test=confusion_matrix(y_test,y_pred)
+cm_test
+from sklearn.metrics import classification_report
+print(classification_report(y_test,y_pred))
